@@ -844,7 +844,7 @@ def component_params():
 # İmport satırları kısmına eklenecek:
 import optimal_policy
 
-# calculate_policy route fonksiyonunu aşağıdaki gibi güncelleyelim:
+# Update only the calculate_policy route function in app.py
 @app.route('/calculate_policy', methods=['POST'])
 def calculate_policy():
     # Get parameters from session
@@ -866,59 +866,59 @@ def calculate_policy():
     else:
         components_desc = f"All components ({simulator.C} total)"
     
-    # Optimal policy hesaplama
+    # Optimal policy calculation with yellow_threshold constraint
     try:
         optimal_result = optimal_policy.calculate_optimal_policy(params)
         
         if optimal_result['success']:
             policy_info = optimal_result['policy']
             
-            # Optimal müdahale noktalarını ve bileşen sayılarını al
+            # Get optimal intervention points and component counts
             yellow_interventions = policy_info['yellow_interventions']
             red_interventions = policy_info['red_interventions']
             
-            # Optimal politika açıklamasını al
+            # Get optimal policy description
             policy_description = policy_info['policy_description']
             
-            # Optimal politika bilgilerini session'a kaydet
+            # Store optimal policy information in session
             session['optimal_policy'] = optimal_result
             
-            # Müdahale bilgilerini metin olarak formatla
+            # Format intervention information as text
             intervention_text = ""
             
             if yellow_interventions:
-                intervention_text += "Önleyici (Sarı sinyal) müdahaleler:\n"
+                intervention_text += "Preventive (Yellow signal) interventions:\n"
                 for intervention in yellow_interventions:
-                    intervention_text += f"  - Sayaç {intervention['counter']} olduğunda {intervention['components']} bileşen ile müdahale et (olasılık: {intervention['probability']:.3f})\n"
+                    intervention_text += f"  - When counter reaches {intervention['counter']}, intervene with {intervention['components']} components (probability: {intervention['probability']:.3f})\n"
             
             if red_interventions:
-                intervention_text += "\nDüzeltici (Kırmızı sinyal) müdahaleler:\n"
+                intervention_text += "\nCorrective (Red signal) interventions:\n"
                 for intervention in red_interventions:
-                    intervention_text += f"  - Sayaç {intervention['counter']} olduğunda {intervention['components']} bileşen ile müdahale et (olasılık: {intervention['probability']:.3f})\n"
+                    intervention_text += f"  - When counter reaches {intervention['counter']}, intervene with {intervention['components']} components (probability: {intervention['probability']:.3f})\n"
             
-            # Optimal politika bilgilerini rules_text'e ekle
+            # Add optimal policy information to rules_text
             optimal_info = f"""
-Optimal Bakım Politikası:
+Optimal Maintenance Policy:
 ------------------------
 {policy_description}
 
 {intervention_text}
-Kırmızı durumda olma olasılığı: {policy_info['down_probability']:.3f}
-Önleyici bakım olasılığı: {policy_info['preventive_probability']:.3f}
-Optimal maliyet: {policy_info['objective_value']:.2f}
+Red state probability: {policy_info['down_probability']:.3f}
+Preventive maintenance probability: {policy_info['preventive_probability']:.3f}
+Optimal cost: {policy_info['objective_value']:.2f}
 """
         else:
             optimal_info = f"""
-Optimal Politika Hesaplanamadı:
------------------------------
-Hata: {optimal_result['error']}
+Optimal Policy Could Not Be Calculated:
+------------------------------------
+Error: {optimal_result['error']}
 """
     except Exception as e:
         optimal_info = f"""
-Optimal Politika Hesaplanamadı:
------------------------------
-Hata: {str(e)}
-Not: Bu hesaplama için gurobipy kütüphanesi gereklidir. Lütfen 'pip install gurobipy' komutu ile yükleyin.
+Optimal Policy Could Not Be Calculated:
+------------------------------------
+Error: {str(e)}
+Note: This calculation requires the gurobipy library. Please install it with 'pip install gurobipy'.
 """
         
     # Get maintenance rules text

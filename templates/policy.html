@@ -160,46 +160,37 @@
                     </div>
                 </div>
                 
-                <h5 class="mt-4">Benefits of this Policy</h5>
-                <ul>
-                    <li>Balances preventive and corrective maintenance to optimize total cost</li>
-                    <li>Minimizes system downtime by addressing potential failures before they occur</li>
-                    <li>Simple to implement and understand</li>
-                    <li>Adapts to different component degradation rates</li>
-                    <li>Provides flexibility in selecting which components to maintain</li>
-                </ul>
-                
-                <!-- Optimal Bakım Politikası bölümü -->
+                <!-- Optimal Maintenance Policy Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Optimal Bakım Politikası</h5>
+                        <h5 class="mb-0">Optimal Maintenance Policy</h5>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i> 
-                            Optimal bakım politikası, matematiksel optimizasyon kullanılarak hesaplanmıştır.
-                            Bu politika, tüm mümkün durumlar için minimum uzun vadeli maliyeti sağlar.
+                            The optimal maintenance policy has been calculated using mathematical optimization.
+                            This policy provides the minimum long-term cost for all possible system states.
                         </div>
                         
                         <div class="mb-4">
-                            <h6 class="font-weight-bold">Optimal Müdahale Stratejisi:</h6>
+                            <h6 class="font-weight-bold">Optimal Intervention Strategy:</h6>
                             <div class="bg-light p-3 rounded">
                                 {% if session.get('optimal_policy') and session.get('optimal_policy').get('success') %}
                                     {% set policy = session.get('optimal_policy').get('policy') %}
                                     
                                     <div class="mb-3">
-                                        <strong>Optimal Politika Açıklaması:</strong>
+                                        <strong>Optimal Policy Description:</strong>
                                         <p>{{ policy.policy_description }}</p>
                                     </div>
                                     
                                     {% if policy.yellow_interventions %}
                                     <div class="mb-3">
-                                        <strong>Önleyici (Sarı sinyal) Müdahaleler:</strong>
+                                        <strong>Preventive (Yellow Signal) Interventions:</strong>
                                         <ul class="list-group">
                                             {% for intervention in policy.yellow_interventions %}
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Sayaç {{ intervention.counter }} olduğunda {{ intervention.components }} bileşen ile müdahale et
-                                                <span class="badge bg-primary">Olasılık: {{ "%.3f"|format(intervention.probability) }}</span>
+                                                Intervene with {{ intervention.components }} components when counter reaches {{ intervention.counter }}
+                                                <span class="badge bg-primary">Probability: {{ "%.3f"|format(intervention.probability) }}</span>
                                             </li>
                                             {% endfor %}
                                         </ul>
@@ -208,12 +199,12 @@
                                     
                                     {% if policy.red_interventions %}
                                     <div class="mb-3">
-                                        <strong>Düzeltici (Kırmızı sinyal) Müdahaleler:</strong>
+                                        <strong>Corrective (Red Signal) Interventions:</strong>
                                         <ul class="list-group">
                                             {% for intervention in policy.red_interventions %}
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Sayaç {{ intervention.counter }} olduğunda {{ intervention.components }} bileşen ile müdahale et
-                                                <span class="badge bg-danger">Olasılık: {{ "%.3f"|format(intervention.probability) }}</span>
+                                                Intervene with {{ intervention.components }} components when counter reaches {{ intervention.counter }}
+                                                <span class="badge bg-danger">Probability: {{ "%.3f"|format(intervention.probability) }}</span>
                                             </li>
                                             {% endfor %}
                                         </ul>
@@ -224,7 +215,7 @@
                                         <div class="col-md-4">
                                             <div class="card text-white bg-danger mb-3">
                                                 <div class="card-body text-center">
-                                                    <h5 class="card-title">Kırmızı Durum Olasılığı</h5>
+                                                    <h5 class="card-title">Red State Probability</h5>
                                                     <p class="card-text display-4">{{ "%.1f"|format(policy.down_probability * 100) }}%</p>
                                                 </div>
                                             </div>
@@ -232,7 +223,7 @@
                                         <div class="col-md-4">
                                             <div class="card text-dark bg-warning mb-3">
                                                 <div class="card-body text-center">
-                                                    <h5 class="card-title">Önleyici Bakım Olasılığı</h5>
+                                                    <h5 class="card-title">Preventive Maintenance Probability</h5>
                                                     <p class="card-text display-4">{{ "%.1f"|format(policy.preventive_probability * 100) }}%</p>
                                                 </div>
                                             </div>
@@ -240,7 +231,7 @@
                                         <div class="col-md-4">
                                             <div class="card text-white bg-success mb-3">
                                                 <div class="card-body text-center">
-                                                    <h5 class="card-title">Optimal Maliyet</h5>
+                                                    <h5 class="card-title">Optimal Cost</h5>
                                                     <p class="card-text display-4">{{ "%.2f"|format(policy.objective_value) }}</p>
                                                 </div>
                                             </div>
@@ -249,19 +240,28 @@
                                 {% else %}
                                     <div class="alert alert-warning">
                                         <i class="fas fa-exclamation-triangle me-2"></i>
-                                        Optimal politika hesaplanamadı. Olası nedenler:
+                                        Optimal policy could not be calculated. Possible reasons:
                                         <ul>
-                                            <li>Gurobipy kütüphanesi yüklü olmayabilir</li>
-                                            <li>Hesaplama sırasında bir hata oluşmuş olabilir</li>
-                                            <li>Optimizasyon problemi çözülememiş olabilir</li>
+                                            <li>Gurobipy library may not be installed</li>
+                                            <li>An error occurred during calculation</li>
+                                            <li>The optimization problem could not be solved</li>
                                         </ul>
-                                        Daha fazla bilgi için lütfen konsol çıktısını kontrol edin.
+                                        Please check the console output for more information.
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <h5 class="mt-4">Benefits of this Policy</h5>
+                <ul>
+                    <li>Balances preventive and corrective maintenance to optimize total cost</li>
+                    <li>Minimizes system downtime by addressing potential failures before they occur</li>
+                    <li>Simple to implement and understand</li>
+                    <li>Adapts to different component degradation rates</li>
+                    <li>Provides flexibility in selecting which components to maintain</li>
+                </ul>
                 
                 <div class="alert alert-info mt-4">
                     <h5 class="alert-heading">Try Different Thresholds and Strategies</h5>
